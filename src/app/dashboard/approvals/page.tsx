@@ -108,7 +108,7 @@ export default async function ApprovalsPage() {
   // User is Master - fetch pending logs for their tenant only
   const tenantId = profile.tenant_id
   
-  const { data: pendingLogs, error: logsError } = await supabase
+  const { data: rawLogs, error: logsError } = await supabase
     .from('logs')
     .select(
       `
@@ -129,22 +129,22 @@ export default async function ApprovalsPage() {
     .order('created_at', { ascending: false })
   
   // Manually fetch user profiles for each log
-  if (pendingLogs && pendingLogs.length > 0) {
-    const userIds = [...new Set(pendingLogs.map(log => log.user_id))]
+  let pendingLogs: any[] = []
+  if (rawLogs && rawLogs.length > 0) {
+    const userIds = [...new Set(rawLogs.map(log => log.user_id))]
     const { data: profiles } = await supabase
       .from('profiles')
       .select('id, email, full_name')
       .in('id', userIds)
     
     // Attach profile data to each log
-    if (profiles) {
-      pendingLogs.forEach(log => {
-        const profile = profiles.find(p => p.id === log.user_id)
-        if (profile) {
-          log.profiles = profile
-        }
-      })
-    }
+    pendingLogs = rawLogs.map(log => {
+      const profile = profiles?.find(p => p.id === log.user_id)
+      return {
+        ...log,
+        profiles: profile || null
+      }
+    })
   }
 
   if (logsError) {
