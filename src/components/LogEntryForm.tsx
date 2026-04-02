@@ -59,8 +59,8 @@ export default function LogEntryForm() {
                 } else {
                   setSites(data || [])
                 }
+                setIsSitesLoading(false)
               })
-              .finally(() => setIsSitesLoading(false))
           } else {
             setSiteFetchError('Account not associated with a tenant')
             setIsSitesLoading(false)
@@ -213,11 +213,12 @@ export default function LogEntryForm() {
           <p>You have Viewer permissions and cannot create log entries. Please contact your administrator if you need Operator access.</p>
         </div>
       ) : (
-        {/* Type Dropdown */}
-        <div>
-          <label htmlFor="type" className="block text-sm font-medium text-gray-900 mb-2">
-            Type <span className="text-red-500">*</span>
-          </label>
+        <form action={handleSubmit} className="space-y-6">
+          {/* Type Dropdown */}
+          <div>
+            <label htmlFor="type" className="block text-sm font-medium text-gray-900 mb-2">
+              Type <span className="text-red-500">*</span>
+            </label>
           <select
             id="type"
             name="type"
