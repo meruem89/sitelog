@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'SiteLog',
   webDir: 'public',
   server: {
-    url: 'https://your-actual-live-vercel-url.vercel.app',
+    url: 'https://sitelog-m3og.vercel.app',
     cleartext: true
   }
 };
