@@ -1,0 +1,17 @@
+<!-- SiteLog App Icon - 192x192 -->
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="192" height="192" fill="#4F46E5" rx="36"/>
+  
+  <!-- Construction helmet icon -->
+  <g transform="translate(48, 48)">
+    <!-- Helmet top -->
+    <path d="M 48 20 Q 48 10, 60 10 L 80 10 Q 92 10, 92 20 L 92 50 Q 92 60, 80 60 L 60 60 Q 48 60, 48 50 Z" fill="#FFFFFF"/>
+    
+    <!-- Helmet brim -->
+    <rect x="40" y="56" width="56" height="12" rx="4" fill="#FFFFFF"/>
+    
+    <!-- SL text -->
+    <text x="48" y="90" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">SL</text>
+  </g>
+</svg>
