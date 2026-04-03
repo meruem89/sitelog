@@ -1,8 +1,10 @@
 'use client'
 
-import { LayoutDashboard, Building2, FileText, Users, CheckSquare, CreditCard } from 'lucide-react'
+import { LayoutDashboard, Building2, FileText, Users, CheckSquare, CreditCard, LogOut } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { createClient } from '@/utils/supabase/client'
+import { useState } from 'react'
 
 const navItems = [
   { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
@@ -28,6 +30,20 @@ export default function DashboardClientLayout({
   profile: Profile
 }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true)
+      const supabase = createClient()
+      await supabase.auth.signOut()
+      router.push('/login')
+    } catch (error) {
+      console.error('Logout error:', error)
+      setIsLoggingOut(false)
+    }
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -61,7 +77,7 @@ export default function DashboardClientLayout({
               })}
           </nav>
 
-          <div className="p-4 border-t border-gray-200">
+          <div className="p-4 border-t border-gray-200 space-y-3">
             <div className="flex items-center gap-3 px-4 py-3">
               <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white">
                 {profile.email?.charAt(0).toUpperCase()}
@@ -71,6 +87,15 @@ export default function DashboardClientLayout({
                 <p className="text-xs text-gray-500">{profile.role}</p>
               </div>
             </div>
+
+            <button
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="font-medium">{isLoggingOut ? 'Logging out...' : 'Log Out'}</span>
+            </button>
           </div>
         </div>
       </aside>
