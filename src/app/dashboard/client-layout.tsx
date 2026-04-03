@@ -1,6 +1,6 @@
 'use client'
 
-import { LayoutDashboard, Building2, FileText, Users, CheckSquare, CreditCard, LogOut } from 'lucide-react'
+import { LayoutDashboard, Building2, FileText, Users, CheckSquare, CreditCard, LogOut, Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
@@ -32,12 +32,14 @@ export default function DashboardClientLayout({
   const pathname = usePathname()
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
 
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true)
       const supabase = createClient()
       await supabase.auth.signOut()
+      setIsMobileSidebarOpen(false)
       router.push('/login')
     } catch (error) {
       console.error('Logout error:', error)
@@ -46,8 +48,32 @@ export default function DashboardClientLayout({
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <aside className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
+    <div className="relative flex min-h-screen bg-gray-50">
+      <header className="md:hidden fixed top-0 left-0 right-0 z-30 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4">
+        <button
+          onClick={() => setIsMobileSidebarOpen((prev) => !prev)}
+          className="p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+          aria-label="Toggle navigation menu"
+        >
+          {isMobileSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+        <h1 className="text-lg font-bold text-indigo-600">SiteLog</h1>
+        <div className="w-10" />
+      </header>
+
+      {isMobileSidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/40 z-20"
+          onClick={() => setIsMobileSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        className={`fixed md:static top-0 left-0 z-30 h-full w-64 bg-white border-r border-gray-200 flex-shrink-0 transform transition-transform duration-300 ease-out md:translate-x-0 ${
+          isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
         <div className="h-full flex flex-col">
           <div className="h-16 flex items-center px-6 border-b border-gray-200">
             <h1 className="text-xl font-bold text-indigo-600">SiteLog</h1>
@@ -64,6 +90,7 @@ export default function DashboardClientLayout({
                   <Link
                     key={item.name}
                     href={item.href}
+                    onClick={() => setIsMobileSidebarOpen(false)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-l-lg transition-all ${
                       isActive
                         ? 'bg-indigo-50 text-indigo-700 border-r-4 border-indigo-600 font-medium'
@@ -100,7 +127,7 @@ export default function DashboardClientLayout({
         </div>
       </aside>
 
-      <main className="flex-1 overflow-auto">{children}</main>
+      <main className="flex-1 overflow-auto pt-16 md:pt-0 md:ml-0">{children}</main>
     </div>
   )
 }

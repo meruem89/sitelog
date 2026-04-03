@@ -161,14 +161,20 @@ export default function SubscriptionClient({
 
   const handlePaymentSuccess = async (response: any) => {
     try {
-      // Here you would verify the payment signature on your backend
-      // and update the subscription status in the database
-      
-      console.log('Payment successful:', {
-        paymentId: response.razorpay_payment_id,
-        orderId: response.razorpay_order_id,
-        signature: response.razorpay_signature,
+      const verifyResponse = await fetch('/api/razorpay', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_signature: response.razorpay_signature,
+        }),
       })
+
+      const verifyData = await verifyResponse.json()
+      if (!verifyResponse.ok || !verifyData.verified) {
+        throw new Error(verifyData.error || 'Payment signature verification failed')
+      }
 
       setSuccess('Payment successful! Your subscription is now active.')
       setIsLoading(false)
