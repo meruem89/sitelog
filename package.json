@@ -17,8 +17,8 @@
     "@supabase/supabase-js": "^2.101.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "jspdf": "^4.2.1",
-    "jspdf-autotable": "^5.0.7",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "lucide-react": "^1.7.0",
     "next": "16.2.2",
     "razorpay": "^2.9.6",
@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^8.3.0",
+    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
