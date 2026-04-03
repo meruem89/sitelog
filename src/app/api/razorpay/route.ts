@@ -9,19 +9,24 @@ export async function POST(request: NextRequest) {
       key_secret: process.env.RAZORPAY_KEY_SECRET!,
     })
 
-    // Get request body (optional: customer details)
+    // Get request body (amount, customer details, notes)
     const body = await request.json().catch(() => ({}))
 
+    // Amount should be provided in paise (already converted from rupees)
+    const amount = body.amount || 99900 // Default to ₹999 if not provided
+
     // Create Razorpay Order
-    // Amount is ₹999, converted to paise (multiply by 100)
     const order = await razorpay.orders.create({
-      amount: 99900, // ₹999 in paise
+      amount: amount,
       currency: 'INR',
       receipt: `receipt_${Date.now()}`,
       notes: {
         product: 'SiteLog Pro',
-        plan: 'Monthly Base Subscription',
+        plan: body.notes?.plan || 'Monthly Subscription',
         user_email: body.email || '',
+        user_id: body.notes?.userId || '',
+        sites: body.notes?.sites || '0',
+        ...body.notes,
       },
     })
 

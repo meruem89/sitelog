@@ -1,6 +1,6 @@
 'use client'
 
-import { LayoutDashboard, Building2, FileText, Users, CheckSquare } from 'lucide-react'
+import { LayoutDashboard, Building2, FileText, Users, CheckSquare, CreditCard } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -10,6 +10,7 @@ const navItems = [
   { name: 'Logs', href: '/dashboard/logs', icon: FileText },
   { name: 'Approvals', href: '/dashboard/approvals', icon: CheckSquare },
   { name: 'Team', href: '/dashboard/team', icon: Users },
+  { name: 'Subscription', href: '/dashboard/subscription', icon: CreditCard, masterOnly: true },
 ]
 
 type Profile = {
@@ -37,25 +38,27 @@ export default function DashboardClientLayout({
           </div>
 
           <nav className="flex-1 px-3 py-6 space-y-1">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href
-              const Icon = item.icon
+            {navItems
+              .filter((item) => !item.masterOnly || profile.role === 'Master')
+              .map((item) => {
+                const isActive = pathname === item.href
+                const Icon = item.icon
 
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-l-lg transition-all ${
-                    isActive
-                      ? 'bg-indigo-50 text-indigo-700 border-r-4 border-indigo-600 font-medium'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  {item.name}
-                </Link>
-              )
-            })}
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-l-lg transition-all ${
+                      isActive
+                        ? 'bg-indigo-50 text-indigo-700 border-r-4 border-indigo-600 font-medium'
+                        : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    {item.name}
+                  </Link>
+                )
+              })}
           </nav>
 
           <div className="p-4 border-t border-gray-200">
