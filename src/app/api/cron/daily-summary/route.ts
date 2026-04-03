@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { startOfDay, endOfDay, format } from 'date-fns'
-import { jsPDF } from 'jspdf'
-import autoTable from 'jspdf-autotable'
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 import { Resend } from 'resend'
 
 export const dynamic = 'force-dynamic'
@@ -154,7 +154,8 @@ export async function GET(request: Request) {
 
       const totalSpend = tenantLogs.reduce((sum, log) => sum + (log.cost || 0), 0)
 
-      autoTable(pdf, {
+      // @ts-ignore - jspdf-autotable extends jsPDF with autoTable method
+      pdf.autoTable({
         startY: 26,
         head: [['Date', 'Site', 'Type', 'Description', 'Cost']],
         body: tableBody,
