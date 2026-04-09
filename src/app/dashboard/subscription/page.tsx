@@ -2,6 +2,25 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import SubscriptionClient from './SubscriptionClient'
 
+type Subscription = {
+  status: 'trial' | 'active' | 'cancelled'
+  planName: string
+  currentBillingAmount: number
+  renewalDate: string
+  startedAt: string
+  referralDiscount: number
+  trialDaysRemaining: number | null
+}
+
+type PaymentHistoryItem = {
+  id: string
+  amount: number
+  currency: string
+  status: string
+  createdAt: string
+  razorpayPaymentId: string
+}
+
 export default async function SubscriptionPage() {
   const supabase = await createClient()
 
@@ -82,7 +101,7 @@ export default async function SubscriptionPage() {
   const isOnTrial = trialDaysRemaining > 0
 
   // Mock subscription data (in production, fetch from subscriptions table)
-  const subscriptionData = {
+  const subscriptionData: Subscription = {
     status: isOnTrial ? 'trial' : 'active',
     planName: 'SiteLog Pro',
     currentBillingAmount: totalMonthlyCost,
@@ -93,7 +112,7 @@ export default async function SubscriptionPage() {
   }
 
   // Mock payment history (in production, fetch from payments table)
-  const paymentHistory = [
+  const paymentHistory: PaymentHistoryItem[] = [
     // {
     //   id: '1',
     //   amount: totalMonthlyCost,

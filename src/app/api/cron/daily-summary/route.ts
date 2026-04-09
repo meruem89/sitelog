@@ -17,10 +17,14 @@ type LogRecord = {
   user_id: string | null
   approval_status: string | null
   tenant_id: string | null
-  sites?: { 
+  sites?: {
     name: string | null
     tenant_id: string | null
   } | null
+}
+
+type LogRecordRaw = Omit<LogRecord, 'sites'> & {
+  sites?: { name: string | null; tenant_id: string | null } | { name: string | null; tenant_id: string | null }[] | null
 }
 
 type MasterUser = {
@@ -75,7 +79,10 @@ export async function GET(request: Request) {
       throw new Error(`Failed to fetch logs: ${logsError.message}`)
     }
 
-    const safeLogs: LogRecord[] = logs || []
+    const safeLogs: LogRecord[] = ((logs || []) as LogRecordRaw[]).map((log) => ({
+      ...log,
+      sites: Array.isArray(log.sites) ? (log.sites[0] ?? null) : (log.sites ?? null),
+    }))
 
     // Fetch all master users
     const { data: masters, error: mastersError } = await supabase

@@ -564,7 +564,7 @@ export default function SubscriptionClient({
             </div>
             
             <p className="text-gray-600 mb-6">
-              Are you sure you want to cancel your subscription? You'll lose access to all premium features
+              Are you sure you want to cancel your subscription? You&apos;ll lose access to all premium features
               at the end of your current billing period.
             </p>
 
